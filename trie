@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/16 12:26:50 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/16 20:25:35 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include <iostream>
 #include <exception>
 
+// TODO Might remove throws and use bool instead
+
 /**
 ** @brief Implementation of Trie structure in c++
 **/
@@ -22,12 +24,9 @@ class trie
 {
 	public:
 
-		trie(): _root(new node) {
-			std::cout << "Creation of trie data structure" << std::endl;
-		}
+		trie(): _root(new node) {}
 		~trie() {
 			delete _root;
-			std::cout << "Destruction of trie data structure" << std::endl;
 		}
 
 		void insert(const std::string &word)
@@ -62,6 +61,29 @@ class trie
 			return current->is_word;
 		}
 
+		/**
+		 * @brief Print every word in alphabetical order
+		 * starting from the given prefix. If none given, print all words.
+		 */
+		void print(std::string prefix = "")
+		{
+			if (prefix == "")
+				_print(_root, "");
+			else
+			{
+				node *current = _root;
+				for (char &c : prefix) {
+					if (isalpha(c) == false)
+						throw not_alphabetical_value("print", prefix);
+					c = toupper(c);
+					if (current->next[c - 'A'] == nullptr)
+						return ;
+					current = current->next[c - 'A'];
+				}
+				_print(current, prefix);
+			}
+		}
+
 	private:
 
 		class not_alphabetical_value : public std::exception {
@@ -83,16 +105,34 @@ class trie
 				node(): is_word(false) {
 					for (int i = 0; i < 26; i++)
 						next[i] = nullptr;
-					std::cout << "Creation of node" << std::endl;
 				}
 				~node() {
 					for (int i = 0; i < 26; i++)
 						delete next[i];
-					std::cout << "Destruction of node" << std::endl;
 				}
 				bool is_word;
 				node *next[26];
 		};
 
+		/**
+		 * @brief Print every word starting from the given node
+		 * 
+		 * @param current 
+		 */
+		void _print(node *current, std::string prefix)
+		{
+			if (current == nullptr)
+				return ;
+			if (current->is_word)
+				std::cout << prefix << std::endl;
+			for (int i = 0; i < 26; i++)
+				if (current->next[i] != nullptr)
+				{
+					prefix += char(i + 'A');
+					_print(current->next[i], prefix);
+					prefix.pop_back();
+				}
+		}
+		
 		node *_root;
 };

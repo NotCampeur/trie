@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:50:14 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/16 12:57:46 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/16 17:12:45 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ void trie_insert_test(trie &trie)
 
 	std::cout << "\n[inserting `world`]\n";
 	trie.insert("world");
+
+	std::cout << "\n[inserting `hellaworld`]\n";
+	trie.insert("hellaworld");
 
 	try {
 		std::cout << "\n[inserting NULL]\n";
@@ -66,6 +69,9 @@ void trie_search_test(trie &trie)
 	std::cout << "\n[searching `whelloa`]\n";
 	trie.search("whelloa");
 
+	std::cout << "\n[searching `hellaworld`]\n";
+	trie.search("hellaworld");
+
 	try
 	{
 		std::cout << "\n[searching NULL]\n";
@@ -87,12 +93,27 @@ void trie_search_test(trie &trie)
 	}
 }
 
+void trie_print_test(trie &trie)
+{
+	std::cout << "\n{TRIE PRINT TEST}\n";
+	std::cout << "\n[printing trie]\n";
+	trie.print();
+
+	std::cout << "\n[printing words starting with `he`]\n";
+	std::string s("he");
+	trie.print(s);
+
+	std::cout << "\n[printing words starting with `foo`]\n";
+	trie.print("foo");
+}
+
 int main(void)
 {
 	trie trie;
 	
 	trie_insert_test(trie);
 	trie_search_test(trie);
-
+	trie_print_test(trie);
+	
 	return (0);
 }
