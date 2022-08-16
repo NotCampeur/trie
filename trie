@@ -1,0 +1,98 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   trie                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
+/*   Updated: 2022/08/16 12:26:50 by ldutriez         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#pragma once
+
+#include <iostream>
+#include <exception>
+
+/**
+** @brief Implementation of Trie structure in c++
+**/
+class trie
+{
+	public:
+
+		trie(): _root(new node) {
+			std::cout << "Creation of trie data structure" << std::endl;
+		}
+		~trie() {
+			delete _root;
+			std::cout << "Destruction of trie data structure" << std::endl;
+		}
+
+		void insert(const std::string &word)
+		{
+			node *current = _root;
+			for (auto c : word) {
+				if (isalpha(c) == false)
+					throw not_alphabetical_value("insert", word);
+				c = toupper(c);
+				if (current->next[c - 'A'] == nullptr)
+					current->next[c - 'A'] = new node;
+				current = current->next[c - 'A'];
+			}
+			current->is_word = true;
+			std::cout << word << " has been inserted in the trie" << std::endl;
+		}
+
+		bool search(const std::string &word) {
+			node *current = _root;
+			for (auto c : word) {
+				if (isalpha(c) == false)
+					throw not_alphabetical_value("search", word);
+				c = toupper(c);
+				if (current->next[c - 'A'] == nullptr)
+				{
+					std::cout << word << " is not in the trie" << std::endl;
+					return false;
+				}
+				current = current->next[c - 'A'];
+			}
+			std::cout << std::boolalpha << word << " is in trie : " << current->is_word << std::endl;
+			return current->is_word;
+		}
+
+	private:
+
+		class not_alphabetical_value : public std::exception {
+			public:
+				not_alphabetical_value(const std::string &method, const std::string &value) : msg("trie::" + method + " " + value + " not alphabetical") {}
+				~not_alphabetical_value() {}
+
+				const char *what() const throw() {
+					return msg.c_str();
+				}
+			
+			private:
+				const std::string msg;
+		};
+
+		class node 
+		{
+			public:
+				node(): is_word(false) {
+					for (int i = 0; i < 26; i++)
+						next[i] = nullptr;
+					std::cout << "Creation of node" << std::endl;
+				}
+				~node() {
+					for (int i = 0; i < 26; i++)
+						delete next[i];
+					std::cout << "Destruction of node" << std::endl;
+				}
+				bool is_word;
+				node *next[26];
+		};
+
+		node *_root;
+};
