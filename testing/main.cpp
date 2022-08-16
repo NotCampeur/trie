@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:50:14 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/16 17:12:45 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/16 21:21:51 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,21 +31,11 @@ void trie_insert_test(trie &trie)
 	std::cout << "\n[inserting `hellaworld`]\n";
 	trie.insert("hellaworld");
 
-	try {
-		std::cout << "\n[inserting NULL]\n";
-		trie.insert(NULL);
-	}
-	catch (std::exception &e) {
-		std::cout << e.what() << std::endl;
-	}
-
-	try {
-		std::cout << "\n[inserting `42`]\n";
-		trie.insert("42");
-	}
-	catch (std::exception &e) {
-		std::cout << e.what() << std::endl;
-	}
+	std::cout << "\n[inserting `42`]\n";
+	if (trie.insert("42") == true)
+		std::cout << "INSERTED\n";
+	else
+		std::cout << "NOT INSERTED\n";
 }
 
 void trie_search_test(trie &trie)
@@ -72,25 +62,11 @@ void trie_search_test(trie &trie)
 	std::cout << "\n[searching `hellaworld`]\n";
 	trie.search("hellaworld");
 
-	try
-	{
-		std::cout << "\n[searching NULL]\n";
-		trie.search(NULL);
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
-
-	try
-	{
-		std::cout << "\n[searching `42`]\n";
-		trie.search("42");
-	}
-	catch(const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
+	std::cout << "\n[searching `42`]\n";
+	if (trie.insert("42") == true)
+		std::cout << "FOUND\n";
+	else
+		std::cout << "NOT FOUND\n";
 }
 
 void trie_print_test(trie &trie)
@@ -105,6 +81,12 @@ void trie_print_test(trie &trie)
 
 	std::cout << "\n[printing words starting with `foo`]\n";
 	trie.print("foo");
+
+	std::cout << "\n[printing words starting with `hellaa`]\n";
+	trie.print("hellaa");
+
+	std::cout << "\n[printing words starting with `hella`]\n";
+	trie.print("hella");
 }
 
 int main(void)

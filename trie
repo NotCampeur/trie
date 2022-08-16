@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/16 20:25:35 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/16 21:24:08 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 #include <iostream>
 #include <exception>
-
-// TODO Might remove throws and use bool instead
 
 /**
 ** @brief Implementation of Trie structure in c++
@@ -29,12 +27,12 @@ class trie
 			delete _root;
 		}
 
-		void insert(const std::string &word)
+		bool insert(const std::string &word)
 		{
 			node *current = _root;
 			for (auto c : word) {
 				if (isalpha(c) == false)
-					throw not_alphabetical_value("insert", word);
+					return false;
 				c = toupper(c);
 				if (current->next[c - 'A'] == nullptr)
 					current->next[c - 'A'] = new node;
@@ -42,13 +40,14 @@ class trie
 			}
 			current->is_word = true;
 			std::cout << word << " has been inserted in the trie" << std::endl;
+			return true;
 		}
 
 		bool search(const std::string &word) {
 			node *current = _root;
 			for (auto c : word) {
 				if (isalpha(c) == false)
-					throw not_alphabetical_value("search", word);
+					return false;
 				c = toupper(c);
 				if (current->next[c - 'A'] == nullptr)
 				{
@@ -65,7 +64,7 @@ class trie
 		 * @brief Print every word in alphabetical order
 		 * starting from the given prefix. If none given, print all words.
 		 */
-		void print(std::string prefix = "")
+		bool print(std::string prefix = "")
 		{
 			if (prefix == "")
 				_print(_root, "");
@@ -74,14 +73,15 @@ class trie
 				node *current = _root;
 				for (char &c : prefix) {
 					if (isalpha(c) == false)
-						throw not_alphabetical_value("print", prefix);
+						return false;
 					c = toupper(c);
 					if (current->next[c - 'A'] == nullptr)
-						return ;
+						return false;
 					current = current->next[c - 'A'];
 				}
 				_print(current, prefix);
 			}
+			return true;
 		}
 
 	private:
