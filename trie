@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/16 21:24:08 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/23 09:15:38 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,18 @@ class trie
 	public:
 
 		trie(): _root(new node) {}
+		trie(const trie &to_copy): _root(new node) {
+			*this = to_copy;
+		}
 		~trie() {
 			delete _root;
+		}
+
+		trie & operator=(const trie & to_assign)
+		{
+			if (this != &to_assign)
+				*_root = *to_assign._root;
+			return *this;
 		}
 
 		bool insert(const std::string &word)
@@ -86,19 +96,6 @@ class trie
 
 	private:
 
-		class not_alphabetical_value : public std::exception {
-			public:
-				not_alphabetical_value(const std::string &method, const std::string &value) : msg("trie::" + method + " " + value + " not alphabetical") {}
-				~not_alphabetical_value() {}
-
-				const char *what() const throw() {
-					return msg.c_str();
-				}
-			
-			private:
-				const std::string msg;
-		};
-
 		class node 
 		{
 			public:
@@ -106,9 +103,27 @@ class trie
 					for (int i = 0; i < 26; i++)
 						next[i] = nullptr;
 				}
+				node(const node & to_copy): is_word(to_copy.is_word)
+				{
+					*this = to_copy;
+				}
 				~node() {
 					for (int i = 0; i < 26; i++)
 						delete next[i];
+				}
+				node & operator=(const node & to_assign)
+				{
+					if (this != &to_assign)
+					{
+						is_word = to_assign.is_word;
+						for (int i = 0; i < 26; i++)
+							if (to_assign.next[i] != nullptr)
+							{
+								next[i] = new node;
+								*next[i] = *to_assign.next[i];
+							}
+					}
+					return *this;
 				}
 				bool is_word;
 				node *next[26];

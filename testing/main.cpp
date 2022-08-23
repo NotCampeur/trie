@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:50:14 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/16 21:21:51 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/23 09:13:12 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,24 @@ void trie_print_test(trie &trie)
 	trie.print("hella");
 }
 
+void trie_copy_constructor_test(const trie &to_copy)
+{
+	std::cout << "\n{TESTING TRIE COPY CONSTRUCTOR}\n";
+	trie t(to_copy);
+
+	trie_insert_test(t);
+	trie_search_test(t);
+	trie_print_test(t);
+}
+
 int main(void)
 {
-	trie trie;
+	trie t;
 	
-	trie_insert_test(trie);
-	trie_search_test(trie);
-	trie_print_test(trie);
-	
+	trie_insert_test(t);
+	trie_search_test(t);
+	trie_print_test(t);
+	trie_copy_constructor_test(t);
+
 	return (0);
 }
