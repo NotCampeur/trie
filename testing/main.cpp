@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:50:14 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/23 09:21:49 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/23 09:37:48 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,58 +15,52 @@
 
 void trie_insert_test(trie &trie)
 {
-	std::cout << "\n{TRIE INSERT TEST}\n";
+	std::cout << "\n{TRIE INSERT TEST}\n" << std::boolalpha;
 	std::cout << "\n[inserting `hello`]\n";
-	trie.insert("hello");
+	std::cout << "hello has been inserted in trie : " << trie.insert("hello") << '\n';
 
 	std::cout << "\n[inserting `hella`]\n";
-	trie.insert("hella");
+	std::cout << "hella has been inserted in trie : " << trie.insert("hella") << '\n';
 
 	std::cout << "\n[inserting `world`]\n";
-	trie.insert("world");
+	std::cout << "world has been inserted in trie : " << trie.insert("world") << '\n';
 
 	std::cout << "\n[inserting `world`]\n";
-	trie.insert("world");
+	std::cout << "world has been inserted in trie : " << trie.insert("world") << '\n';
 
 	std::cout << "\n[inserting `hellaworld`]\n";
-	trie.insert("hellaworld");
+	std::cout << "hellaworld has been inserted in trie : " << trie.insert("hellaworld") << '\n';
 
 	std::cout << "\n[inserting `42`]\n";
-	if (trie.insert("42") == true)
-		std::cout << "INSERTED\n";
-	else
-		std::cout << "NOT INSERTED\n";
+	std::cout << "42 has been inserted in trie : " << trie.insert("42") << '\n';
 }
 
 void trie_search_test(trie &trie)
 {
-	std::cout << "\n{TRIE SEARCH TEST}\n";
+	std::cout << "\n{TRIE SEARCH TEST}\n" << std::boolalpha;
 	std::cout << "\n[searching `hello`]\n";
-	trie.search("hello");
+	std::cout << "hello is in trie : " << trie.search("hello") << '\n';
 
 	std::cout << "\n[searching `hella`]\n";
-	trie.search("hella");
+	std::cout << "hella is in trie : " << trie.search("hella") << '\n';
 	
 	std::cout << "\n[searching `world`]\n";
-	trie.search("world");
+	std::cout << "world is in trie : " << trie.search("world") << '\n';
 	
 	std::cout << "\n[searching `hell`]\n";
-	trie.search("hell");
+	std::cout << "hell is in trie : " << trie.search("hell") << '\n';
 	
 	std::cout << "\n[searching `helloa`]\n";
-	trie.search("helloa");
+	std::cout << "helloa is in trie : " << trie.search("helloa") << '\n';
 	
 	std::cout << "\n[searching `whelloa`]\n";
-	trie.search("whelloa");
+	std::cout << "whelloa is in trie : " << trie.search("whelloa") << '\n';
 
 	std::cout << "\n[searching `hellaworld`]\n";
-	trie.search("hellaworld");
+	std::cout << "hellaworld is in trie : " << trie.search("hellaworld") << '\n';
 
 	std::cout << "\n[searching `42`]\n";
-	if (trie.insert("42") == true)
-		std::cout << "FOUND\n";
-	else
-		std::cout << "NOT FOUND\n";
+	std::cout << "42 is in trie : " << trie.search("42") << '\n';
 }
 
 void trie_print_test(trie &trie)
@@ -94,7 +88,7 @@ void trie_copy_constructor_test(const trie &to_copy)
 	std::cout << "\n{TESTING TRIE COPY CONSTRUCTOR}\n";
 	trie t(to_copy);
 
-	t.insert("Salut");
+	std::cout << "Salut has been inserted in trie : " << t.insert("Salut") << '\n';
 	trie_search_test(t);
 	trie_print_test(t);
 }
@@ -106,7 +100,7 @@ void trie_assignation_operator_test(const trie &to_assign)
 	
 	t = to_assign;
 
-	t.insert("Plop");
+	std::cout << "Plop has been inserted in trie : " << t.insert("Plop") << '\n';
 	trie_search_test(t);
 	trie_print_test(t);
 }

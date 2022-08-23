@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/23 09:15:38 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/23 09:35:07 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,30 +49,27 @@ class trie
 				current = current->next[c - 'A'];
 			}
 			current->is_word = true;
-			std::cout << word << " has been inserted in the trie" << std::endl;
 			return true;
 		}
 
 		bool search(const std::string &word) {
 			node *current = _root;
-			for (auto c : word) {
+			for (auto c : word)
+			{
 				if (isalpha(c) == false)
 					return false;
 				c = toupper(c);
 				if (current->next[c - 'A'] == nullptr)
-				{
-					std::cout << word << " is not in the trie" << std::endl;
 					return false;
-				}
 				current = current->next[c - 'A'];
 			}
-			std::cout << std::boolalpha << word << " is in trie : " << current->is_word << std::endl;
 			return current->is_word;
 		}
 
 		/**
 		 * @brief Print every word in alphabetical order
 		 * starting from the given prefix. If none given, print all words.
+		 * Only a debug function to print in cout.
 		 */
 		bool print(std::string prefix = "")
 		{
@@ -131,6 +128,7 @@ class trie
 
 		/**
 		 * @brief Print every word starting from the given node
+		 * Only a debug function to print in cout.
 		 * 
 		 * @param current 
 		 */
