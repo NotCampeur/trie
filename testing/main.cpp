@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:50:14 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/23 09:37:48 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/24 19:39:57 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,19 @@ void trie_assignation_operator_test(const trie &to_assign)
 	trie_print_test(t);
 }
 
+void trie_erase_test(trie &t)
+{
+	std::cout << "\n{TESTING ERASE}\n";
+	
+	std::cout << "\nErasing `he` : " << t.erase("he") << '\n';
+	std::cout << "\nErasing `42` : " << t.erase("42") << '\n';
+	std::cout << "\nErasing `Hella` : " << t.erase("Hella") << '\n';
+	std::cout << "\nErasing `Hello world` : " << t.erase("Hello world") << '\n';
+
+	std::cout << "\nPrinting trie after deletion test :\n";
+	t.print();
+}
+
 int main(void)
 {
 	trie t;
@@ -114,6 +127,7 @@ int main(void)
 	trie_print_test(t);
 	trie_copy_constructor_test(t);
 	trie_assignation_operator_test(t);
+	trie_erase_test(t);
 
 	return (0);
 }

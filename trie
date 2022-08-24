@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/23 09:35:07 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/24 22:10:28 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 #include <iostream>
 #include <exception>
+
+//TODO: Add iterator to go through each words.
+//TODO: Add constructor parameter to give a "Base" to work on.
 
 /**
 ** @brief Implementation of Trie structure in c++
@@ -52,6 +55,19 @@ class trie
 			return true;
 		}
 
+		/**
+		 * @brief Search for a given word and erase it from the trie.
+		 * Delete every letters that are not part of a common prefix.
+		 *
+		 * @param to_erase The word to erase from the trie.
+		 * @return Return true if the word is not in the trie after this function.
+		 * False in case of bad entry.
+		 */
+		bool erase(const std::string & to_erase)
+		{
+			return _erase(_root, to_erase);
+		}
+
 		bool search(const std::string &word) {
 			node *current = _root;
 			for (auto c : word)
@@ -86,7 +102,7 @@ class trie
 						return false;
 					current = current->next[c - 'A'];
 				}
-				_print(current, prefix);
+				_print(current, prefix); //TODO Need to return _print().
 			}
 			return true;
 		}
@@ -125,6 +141,43 @@ class trie
 				bool is_word;
 				node *next[26];
 		};
+
+		/**
+		 * @brief Tell if a node is a word or part of one.
+		 * 
+		 * @param current The node to check.
+		 * @return true if current is a word or a prefix
+		 */
+		bool _is_prefix(node *current)
+		{
+			if (current->is_word == true)
+				return true;
+			bool is_prefix(false);
+			for (int i(0); i < 26; ++i)
+				if (current->next[i] != nullptr)
+					is_prefix = true;
+			return is_prefix;
+		}
+
+		bool _erase(node *current, std::string to_erase)
+		{
+			if (to_erase.empty() == true)
+			{
+				current->is_word = false;
+				return true;
+			}
+			char next_c = to_erase.front();
+			if (isalpha(next_c) == false)
+				return false;
+			next_c = toupper(next_c);
+			if (current->next[next_c - 'A'] == nullptr)
+				return true;
+			if (_erase(current->next[next_c - 'A'], to_erase.substr(1)) == false)
+				return false;
+			if (_is_prefix(current->next[next_c - 'A']) == false)
+				delete current->next[next_c - 'A'];
+			return true;
+		}
 
 		/**
 		 * @brief Print every word starting from the given node
