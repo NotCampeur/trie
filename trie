@@ -6,16 +6,17 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/24 22:10:28 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/25 06:07:26 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <iostream>
-#include <exception>
+#include <iterator>
 
-//TODO: Add iterator to go through each words.
+//TODO: Add iterator's tools like range and arithmetical operators.'
+//?Maybe clean and split in multiple files.
 //TODO: Add constructor parameter to give a "Base" to work on.
 
 /**
@@ -23,7 +24,209 @@
 **/
 class trie
 {
+	private:
+
+		class node 
+		{
+			public:
+				node(node *previous = nullptr): is_word(false), value('\0'), prev(previous) {
+					for (int i = 0; i < 26; i++)
+						next[i] = nullptr;
+				}
+				node(const node & to_copy): is_word(to_copy.is_word)
+				{
+					*this = to_copy;
+				}
+				~node() {
+					for (int i = 0; i < 26; i++)
+						delete next[i];
+				}
+				node & operator=(const node & to_assign)
+				{
+					if (this != &to_assign)
+					{
+						is_word = to_assign.is_word;
+						for (int i = 0; i < 26; i++)
+							if (to_assign.next[i] != nullptr)
+							{
+								next[i] = new node;
+								*next[i] = *to_assign.next[i];
+								next[i]->value = to_assign.value;
+								next[i]->prev = this;
+							}
+					}
+					return *this;
+				}
+				bool is_word;
+				char value;
+				node *prev;
+				node *next[26]; //TODO: make the next a dynamic value.
+		};
+
 	public:
+
+		struct const_trie_iterator
+		{
+			using iterator_category	= std::bidirectional_iterator_tag;
+			using difference_type	= std::ptrdiff_t;
+			using trie_type			= trie::node*;
+			using value_type		= const std::string;
+			using pointer			= const std::string*;
+			using reference			= const std::string&;
+
+			const_trie_iterator(trie * enclosing_trie, trie_type ptr)
+			: _trie(enclosing_trie), _ptr(ptr), _word(_trie->_get_word(_ptr))
+			{}
+
+			const_trie_iterator(const const_trie_iterator &to_copy)
+			: _trie(to_copy._trie), _ptr(to_copy._ptr), _word(to_copy._word)
+			{}
+
+			~const_trie_iterator() {}
+
+			const_trie_iterator & operator=(const const_trie_iterator &to_assign)
+			{
+				if (this != &to_assign)
+				{
+					_trie = to_assign._trie;
+					_ptr = to_assign._ptr;
+				}
+				return *this;
+			}
+
+			reference operator*() const
+			{
+				return _word;
+			}
+			pointer operator->()
+			{
+				return &_word;
+			}
+
+			const_trie_iterator & operator++()
+			{
+				bool is_word(false);
+				char tmp_c;
+
+				while (is_word == false && _ptr->prev != nullptr)
+				{
+					if (_ptr->prev->is_word == true)
+					{
+						_ptr = _ptr->prev;
+						_word = _trie->_get_word(_ptr);
+						is_word = true;
+						return *this;
+					}
+					else
+					{
+						tmp_c = _ptr->value;
+						for (int c(tmp_c + 1 - 'A'); c < 26; ++c)
+						{
+							if (_ptr->prev->next[c] != nullptr)
+							{
+								_ptr = _ptr->prev->next[c];
+								while (is_word == false)
+								{
+									if (_ptr->is_word == true)
+									{
+										_word = _trie->_get_word(_ptr);
+										is_word = true;
+										return *this;
+									}
+									for (int c(0); c < 26; ++c)
+									{
+										if (_ptr->next[c] != nullptr)
+										{
+											_ptr = _ptr->next[c];
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+					_ptr = _ptr->prev;
+				}
+				_word.clear();
+				_ptr = nullptr;
+				return *this;
+			}
+			const_trie_iterator operator++(int)
+			{
+				const_trie_iterator tmp(*this);
+				++*this;
+				return tmp;
+			}
+
+			const_trie_iterator & operator--()
+			{
+				bool is_word(false);
+				char tmp_c;
+
+				while (is_word == false && _ptr->prev != nullptr)
+				{
+					if (_ptr->prev->is_word == true)
+					{
+						_ptr = _ptr->prev;
+						_word = _trie->_get_word(_ptr);
+						is_word = true;
+						return *this;
+					}
+					else
+					{
+						tmp_c = _ptr->value;
+						for (int c(tmp_c - 1 - 'A'); c >= 0; --c)
+						{
+							if (_ptr->prev->next[c] != nullptr)
+							{
+								_ptr = _ptr->prev->next[c];
+								while (is_word == false)
+								{
+									if (_ptr->is_word == true)
+									{
+										_word = _trie->_get_word(_ptr);
+										is_word = true;
+										return *this;
+									}
+									for (int c(25); c >= 0; --c)
+									{
+										if (_ptr->next[c] != nullptr)
+										{
+											_ptr = _ptr->next[c];
+											break;
+										}
+									}
+								}
+							}
+						}
+					}
+					_ptr = _ptr->prev;
+				}
+				_word.clear();
+				_ptr = nullptr;
+				return *this;
+			}
+			const_trie_iterator operator--(int)
+			{
+				const_trie_iterator tmp(*this);
+				--*this;
+				return tmp;
+			}
+
+			friend bool operator==(const const_trie_iterator & a, const const_trie_iterator & b) { return a._ptr == b._ptr; };
+
+			private:
+				trie		*_trie;
+				trie_type	_ptr;
+				std::string	_word;
+		};
+
+		typedef node				value_type;
+		typedef node*				pointer;
+		typedef const node*			const_pointer;
+		typedef node&				reference;
+		typedef const node&			const_reference;
+		typedef const_trie_iterator const_iterator;
 
 		trie(): _root(new node) {}
 		trie(const trie &to_copy): _root(new node) {
@@ -40,6 +243,39 @@ class trie
 			return *this;
 		}
 
+		const_iterator cbegin()
+		{
+			pointer current = _root;
+
+			for (int i(0); i < 26; ++i)
+				if (current->next[i] != nullptr)
+				{
+					current = current->next[i];
+					if (current->is_word == true)
+						return const_iterator(this, current);
+					i = -1;
+				}
+			return const_iterator(this, nullptr);
+		}
+		const_iterator clast()
+		{
+			pointer current = _root;
+
+			for (int i(25); i >= 0; --i)
+				if (current->next[i] != nullptr)
+				{
+					current = current->next[i];
+					if (current->is_word == true)
+						return const_iterator(this, current);
+					i = 26;
+				}
+			return const_iterator(this, nullptr);
+		}
+		const_iterator cend()
+		{
+			return const_iterator(this, nullptr);
+		}
+
 		bool insert(const std::string &word)
 		{
 			node *current = _root;
@@ -48,8 +284,9 @@ class trie
 					return false;
 				c = toupper(c);
 				if (current->next[c - 'A'] == nullptr)
-					current->next[c - 'A'] = new node;
+					current->next[c - 'A'] = new node(current);
 				current = current->next[c - 'A'];
+				current->value = c;
 			}
 			current->is_word = true;
 			return true;
@@ -109,39 +346,6 @@ class trie
 
 	private:
 
-		class node 
-		{
-			public:
-				node(): is_word(false) {
-					for (int i = 0; i < 26; i++)
-						next[i] = nullptr;
-				}
-				node(const node & to_copy): is_word(to_copy.is_word)
-				{
-					*this = to_copy;
-				}
-				~node() {
-					for (int i = 0; i < 26; i++)
-						delete next[i];
-				}
-				node & operator=(const node & to_assign)
-				{
-					if (this != &to_assign)
-					{
-						is_word = to_assign.is_word;
-						for (int i = 0; i < 26; i++)
-							if (to_assign.next[i] != nullptr)
-							{
-								next[i] = new node;
-								*next[i] = *to_assign.next[i];
-							}
-					}
-					return *this;
-				}
-				bool is_word;
-				node *next[26];
-		};
-
 		/**
 		 * @brief Tell if a node is a word or part of one.
 		 * 
@@ -179,6 +383,18 @@ class trie
 			return true;
 		}
 
+		std::string	_get_word(node * end_of_word)
+		{
+			std::string result;
+
+			while (end_of_word->prev != nullptr)
+			{
+				result.insert(0, 1, end_of_word->value);
+				end_of_word = end_of_word->prev;
+			}
+			return result;
+		}
+
 		/**
 		 * @brief Print every word starting from the given node
 		 * Only a debug function to print in cout.
@@ -202,3 +418,5 @@ class trie
 		
 		node *_root;
 };
+
+bool operator!=(const trie::const_iterator & a, const trie::const_iterator & b) { return !(a == b); };

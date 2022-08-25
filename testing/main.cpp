@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:50:14 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/24 19:39:57 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/25 05:52:15 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,9 @@ void trie_insert_test(trie &trie)
 
 	std::cout << "\n[inserting `42`]\n";
 	std::cout << "42 has been inserted in trie : " << trie.insert("42") << '\n';
+
+	std::cout << "\n[inserting `.`]\n";
+	std::cout << ". has been inserted in trie : " << trie.insert(".") << '\n';
 }
 
 void trie_search_test(trie &trie)
@@ -118,6 +121,27 @@ void trie_erase_test(trie &t)
 	t.print();
 }
 
+void trie_iterator_test(trie &t)
+{
+	std::cout << "\n{TRIE ITERATOR TESTING}\n";
+
+	std::cout << "\nFor loop iterator post increment test\n";
+	for (trie::const_iterator cit(t.cbegin()); cit != t.cend(); cit++)
+		std::cout << *cit << '\n';
+
+	std::cout << "\nFor loop iterator pre increment test\n";
+	for (trie::const_iterator cit(t.cbegin()); cit != t.cend(); ++cit)
+		std::cout << *cit << '\n';
+
+	std::cout << "\nFor loop iterator post decrement test\n";
+	for (trie::const_iterator lit(t.clast()); lit != t.cend(); lit--)
+		std::cout << *lit << '\n';
+
+	std::cout << "\nFor loop iterator pre decrement test\n";
+	for (trie::const_iterator lit(t.clast()); lit != t.cend(); --lit)
+		std::cout << *lit << '\n';
+}
+
 int main(void)
 {
 	trie t;
@@ -128,6 +152,6 @@ int main(void)
 	trie_copy_constructor_test(t);
 	trie_assignation_operator_test(t);
 	trie_erase_test(t);
-
+	trie_iterator_test(t);
 	return (0);
 }
