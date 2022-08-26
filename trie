@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/26 09:24:21 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/26 09:40:03 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,12 +228,12 @@ class trie
 		typedef const node&			const_reference;
 		typedef const_trie_iterator const_iterator;
 
-		trie(const std::string &base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-		: _root(new node), _size(0), _base(base)
+		trie()
+		: _root(new node), _size(0)
 		{}
 		
 		trie(const trie &to_copy)
-		: _root(new node), _size(to_copy._size), _base(to_copy._base)
+		: _root(new node), _size(to_copy._size)
 		{
 			*_root = *to_copy._root;
 		}
@@ -248,7 +248,6 @@ class trie
 			{
 				*_root = *to_assign._root;
 				_size = to_assign._size;
-				_base = to_assign._base;
 			}
 			return *this;
 		}
@@ -440,7 +439,6 @@ class trie
 		
 		node 		*_root;
 		size_t		_size;
-		std::string	_base;
 };
 
 bool operator!=(const trie::const_iterator & a, const trie::const_iterator & b) { return !(a == b); };
