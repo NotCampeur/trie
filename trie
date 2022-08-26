@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/26 09:05:11 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/26 09:24:21 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,10 +228,16 @@ class trie
 		typedef const node&			const_reference;
 		typedef const_trie_iterator const_iterator;
 
-		trie(): _root(new node) {}
-		trie(const trie &to_copy): _root(new node) {
-			*this = to_copy;
+		trie(const std::string &base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+		: _root(new node), _size(0), _base(base)
+		{}
+		
+		trie(const trie &to_copy)
+		: _root(new node), _size(to_copy._size), _base(to_copy._base)
+		{
+			*_root = *to_copy._root;
 		}
+		
 		~trie() {
 			delete _root;
 		}
@@ -239,9 +245,15 @@ class trie
 		trie & operator=(const trie & to_assign)
 		{
 			if (this != &to_assign)
+			{
 				*_root = *to_assign._root;
+				_size = to_assign._size;
+				_base = to_assign._base;
+			}
 			return *this;
 		}
+
+		size_t	size(void) const { return _size; }
 
 		const_iterator cbegin()
 		{
@@ -275,7 +287,8 @@ class trie
 		{
 			return const_iterator(this, nullptr);
 		}
-
+		
+		//!I should check the validity of the entry before starting to add it.
 		bool insert(const std::string &word)
 		{
 			node *current = _root;
@@ -288,7 +301,11 @@ class trie
 				current = current->next[c - 'A'];
 				current->value = c;
 			}
-			current->is_word = true;
+			if (current->is_word == false)
+			{
+				++_size;
+				current->is_word = true;
+			}
 			return true;
 		}
 
@@ -367,7 +384,11 @@ class trie
 		{
 			if (to_erase.empty() == true)
 			{
-				current->is_word = false;
+				if (current->is_word == true)
+				{
+					--_size;
+					current->is_word = false;
+				}
 				return true;
 			}
 			char next_c = to_erase.front();
@@ -417,7 +438,9 @@ class trie
 				}
 		}
 		
-		node *_root;
+		node 		*_root;
+		size_t		_size;
+		std::string	_base;
 };
 
 bool operator!=(const trie::const_iterator & a, const trie::const_iterator & b) { return !(a == b); };

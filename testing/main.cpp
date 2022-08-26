@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:50:14 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/25 05:52:15 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/26 09:26:40 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,12 @@ void trie_iterator_test(trie &t)
 		std::cout << *lit << '\n';
 }
 
+void trie_size_test(const trie & t)
+{
+	std::cout << "\n{TRIE SIZE TESTING}\n";
+	std::cout << "Number of words in the trie : " << t.size() << '\n';
+}
+
 int main(void)
 {
 	trie t;
@@ -153,5 +159,6 @@ int main(void)
 	trie_assignation_operator_test(t);
 	trie_erase_test(t);
 	trie_iterator_test(t);
+	trie_size_test(t);
 	return (0);
 }
