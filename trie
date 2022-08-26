@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/26 09:40:03 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/26 11:10:18 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,17 @@
 
 #include <iostream>
 #include <iterator>
+
+namespace ldtrie
+{
+	bool is_only_alpha(const std::string &str)
+	{
+		for (char c : str)
+			if (isalpha(c) == false)
+				return false;
+		return true;
+	}
+}
 
 //TODO: Add iterator's tools like range and arithmetical operators.'
 //?Maybe clean and split in multiple files.
@@ -287,13 +298,14 @@ class trie
 			return const_iterator(this, nullptr);
 		}
 		
-		//!I should check the validity of the entry before starting to add it.
 		bool insert(const std::string &word)
 		{
 			node *current = _root;
-			for (auto c : word) {
-				if (isalpha(c) == false)
-					return false;
+
+			if (ldtrie::is_only_alpha(word) == false)
+				return false;
+			for (auto c : word)
+			{
 				c = toupper(c);
 				if (current->next[c - 'A'] == nullptr)
 					current->next[c - 'A'] = new node(current);
@@ -318,15 +330,19 @@ class trie
 		 */
 		bool erase(const std::string & to_erase)
 		{
-			return _erase(_root, to_erase);
+			if (ldtrie::is_only_alpha(to_erase) == false)
+				return false;
+			_erase(_root, to_erase);
+			return true;
 		}
 
 		bool search(const std::string &word) {
 			node *current = _root;
+
+			if (ldtrie::is_only_alpha(word) == false)
+				return false;
 			for (auto c : word)
 			{
-				if (isalpha(c) == false)
-					return false;
 				c = toupper(c);
 				if (current->next[c - 'A'] == nullptr)
 					return false;
@@ -342,14 +358,14 @@ class trie
 		 */
 		bool print(std::string prefix = "")
 		{
+			if (ldtrie::is_only_alpha(prefix) == false)
+				return false;
 			if (prefix == "")
 				_print(_root, "");
 			else
 			{
 				node *current = _root;
 				for (char &c : prefix) {
-					if (isalpha(c) == false)
-						return false;
 					c = toupper(c);
 					if (current->next[c - 'A'] == nullptr)
 						return false;
@@ -379,7 +395,7 @@ class trie
 			return is_prefix;
 		}
 
-		bool _erase(node *current, std::string to_erase)
+		void _erase(node *current, std::string to_erase)
 		{
 			if (to_erase.empty() == true)
 			{
@@ -388,19 +404,16 @@ class trie
 					--_size;
 					current->is_word = false;
 				}
-				return true;
+				return ;
 			}
 			char next_c = to_erase.front();
-			if (isalpha(next_c) == false)
-				return false;
 			next_c = toupper(next_c);
 			if (current->next[next_c - 'A'] == nullptr)
-				return true;
-			if (_erase(current->next[next_c - 'A'], to_erase.substr(1)) == false)
-				return false;
+				return ;
+			_erase(current->next[next_c - 'A'], to_erase.substr(1));
 			if (_is_prefix(current->next[next_c - 'A']) == false)
 				delete current->next[next_c - 'A'];
-			return true;
+			return ;
 		}
 
 		std::string	_get_word(node * end_of_word)
