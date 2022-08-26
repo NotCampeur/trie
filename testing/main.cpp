@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:50:14 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/26 09:47:12 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/26 11:52:49 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,24 +87,24 @@ void trie_print_test(trie &trie)
 	trie.print("hella");
 }
 
-void trie_copy_constructor_test(const trie &to_copy)
+void trie_copy_constructor_test(trie &to_copy)
 {
 	std::cout << "\n{TESTING TRIE COPY CONSTRUCTOR}\n";
 	trie t(to_copy);
 
-	std::cout << "Salut has been inserted in trie : " << t.insert("Salut") << '\n';
+	std::cout << "Salut has been inserted in tmp trie : " << t.insert("Salut") << '\n';
 	trie_search_test(t);
 	trie_print_test(t);
 }
 
-void trie_assignation_operator_test(const trie &to_assign)
+void trie_assignation_operator_test(trie &to_assign)
 {
 	std::cout << "\n{TESTING TRIE ASSIGNATION OPERATOR}\n";
 	trie t;
 	
 	t = to_assign;
 
-	std::cout << "Plop has been inserted in trie : " << t.insert("Plop") << '\n';
+	std::cout << "Plop has been inserted in tmp trie : " << t.insert("Plop") << '\n';
 	trie_search_test(t);
 	trie_print_test(t);
 }
@@ -143,7 +143,7 @@ void trie_iterator_test(trie &t)
 		std::cout << *lit << '\n';
 }
 
-void trie_size_test(const trie & t)
+void trie_size_test(trie & t)
 {
 	std::cout << "\n{TRIE SIZE TESTING}\n";
 	std::cout << "Number of words in the trie : " << t.size() << '\n';
@@ -152,14 +152,19 @@ void trie_size_test(const trie & t)
 int main(void)
 {
 	trie t;
-	
-	trie_insert_test(t);
-	trie_search_test(t);
-	trie_print_test(t);
-	trie_copy_constructor_test(t);
-	trie_assignation_operator_test(t);
-	trie_erase_test(t);
-	trie_iterator_test(t);
-	trie_size_test(t);
+	void (*tests[8])(trie &) = {
+		trie_insert_test, trie_search_test, trie_print_test,
+		trie_copy_constructor_test, trie_assignation_operator_test,
+		trie_erase_test, trie_iterator_test, trie_size_test
+	};
+
+	srand(time(NULL));
+	for (
+			int to_call(rand() % 8), count(0);
+			count != 1000;
+			to_call = rand() % 8, ++count
+		)
+		tests[to_call](t);
+
 	return (0);
 }
