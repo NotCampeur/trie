@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/25 06:07:26 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/26 09:05:11 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -386,7 +386,8 @@ class trie
 		std::string	_get_word(node * end_of_word)
 		{
 			std::string result;
-
+			if (end_of_word == nullptr)
+				return result;
 			while (end_of_word->prev != nullptr)
 			{
 				result.insert(0, 1, end_of_word->value);
