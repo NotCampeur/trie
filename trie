@@ -6,7 +6,7 @@
 /*   By: ldutriez <ldutriez@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/16 10:53:07 by ldutriez          #+#    #+#             */
-/*   Updated: 2022/08/26 11:10:18 by ldutriez         ###   ########.fr       */
+/*   Updated: 2022/08/26 13:31:18 by ldutriez         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,12 @@ class trie
 					if (this != &to_assign)
 					{
 						is_word = to_assign.is_word;
+						value = to_assign.value;
 						for (int i = 0; i < 26; i++)
 							if (to_assign.next[i] != nullptr)
 							{
 								next[i] = new node;
 								*next[i] = *to_assign.next[i];
-								next[i]->value = to_assign.value;
 								next[i]->prev = this;
 							}
 					}
@@ -412,7 +412,10 @@ class trie
 				return ;
 			_erase(current->next[next_c - 'A'], to_erase.substr(1));
 			if (_is_prefix(current->next[next_c - 'A']) == false)
+			{
 				delete current->next[next_c - 'A'];
+				current->next[next_c - 'A'] = nullptr;
+			}
 			return ;
 		}
 
